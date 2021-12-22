@@ -1,49 +1,87 @@
 import { useState } from "react";
 import Table from "./Table";
 import Footer from "./Footer";
+import axios from "axios";
+import { useEffect } from "react";
 
+const dbResponse = 'https://coockies-yousef.herokuapp.com/api/v1/cookie_stands/';
 
 const Main = (props) => {
     const [branch, setBranch] = useState([]);
-    const [hourly, setHourly] = useState([]);
+    // const [hourly, setHourly] = useState([]);
+    const [data, setData] = useState([])
+
+    let totalHour = []
+    let totalOftotals = 0
+    const config = {
+        headers: { "Authorization": `Bearer ${props.token}` }
+    }
+    axios.get(dbResponse, config).then(res => {
+        setData(res.data);
+    })
+
+
+    for (let i = 0; i < 14; i++) {
+        let sum = 0;
+        for (let j = 0; j < data.length; j++) {
+            sum += data[j].hourly_sales[i]
+        }
+        totalOftotals += sum
+        totalHour.push(sum)
+    }
+
+    totalHour.push(totalOftotals);
+    let hourly = totalHour;
+
+
+    // axios.post('https://coockies-yousef.herokuapp.com/admin/cookie_stands/cookiestand/add/', config).then(res => {
+    //     setData(res.data);
+    // })
 
     const formHandler = (e) => {
         e.preventDefault();
+        let cookiePerHour = []
+        let totalDay = 0
+        let min = Number(e.target.min.value)
+        let max = Number(e.target.max.value)
+        let avg = Number(e.target.avg.value)
 
-        let totalHour = []
-        let totalOftotals = 0
-        let branchInfo = {
-            location: e.target.location.value,
-            min: Number(e.target.min.value),
-            max: Number(e.target.max.value),
-            avg: Number(e.target.avg.value),
-            totalDay: 0,
-            cookiePerHour: [],
-            hourList: ["6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm"],
-            allTotal: 0,
+        const random = (min, max, avg) => {
+            return (Math.floor(Math.random() * max) + min) * avg
         }
 
-
-        for (let i = 0; i < branchInfo.hourList.length; i++) {
-            let numCookie = random(branchInfo.min, branchInfo.max, branchInfo.avg)
-            branchInfo.cookiePerHour.push(numCookie);
-            branchInfo.totalDay += numCookie
-        };
-        for (let i = 0; i < branchInfo.cookiePerHour.length; i++) {
-            let sum = 0;
-            for (let j = 0; j < branch.length; j++) {
-                sum += branch[j].cookiePerHour[i]
+        for (let i = 0; i < 14; i++) {
+            let numCookie = random(min, max, avg)
+            cookiePerHour.push(numCookie);
+            totalDay += numCookie
+        }
+        console.log(cookiePerHour);
+        cookiePerHour.push(totalDay)
+        const configPost = {
+            method: "POST",
+            url: 'https://coockies-yousef.herokuapp.com/api/v1/cookie_stands/',
+            headers: { "Authorization": `Bearer ${props.token}` },
+            data: {
+                location: e.target.location.value,
+                description: '',
+                hourly_sales: cookiePerHour,
+                minimum_customers_per_hour: min,
+                maximum_customers_per_hour: max,
+                average_cookies_per_sale: avg,
+                owner: 1
             }
-            sum += branchInfo.cookiePerHour[i]
-            totalOftotals += sum
-            totalHour.push(sum)
         }
-        setBranch([...branch, branchInfo]);
-        setHourly([...totalHour, totalOftotals])
 
+        axios(configPost)
     }
-    const random = (min, max, avg) => {
-        return (Math.floor(Math.random() * max) + min) * avg
+
+    const deleteHandler =async (id) => {
+        const config = {
+            method: "DELETE",
+            url: `https://coockies-yousef.herokuapp.com/api/v1/cookie_stands/${id}`,
+            headers: { "Authorization": `Bearer ${props.token}` }
+        }
+        await axios(config)
     }
 
     return (<>
@@ -78,9 +116,14 @@ const Main = (props) => {
             <Table
                 branch={branch}
                 hourly={hourly}
+                data={data}
+                deleteHandler={deleteHandler}
+
             />
         </main >
-        <Footer counter={branch.length} />
+        <Footer
+            counter={branch.length}
+        />
     </>
 
     )
