@@ -13,4 +13,4 @@ function PageHead() {
     )
 }
 
-export default Head
+export default PageHead
