@@ -7,8 +7,6 @@ import { useEffect } from "react";
 const dbResponse = 'https://coockies-yousef.herokuapp.com/api/v1/cookie_stands/';
 
 const Main = (props) => {
-    const [branch, setBranch] = useState([]);
-    // const [hourly, setHourly] = useState([]);
     const [data, setData] = useState([])
 
     let totalHour = []
@@ -34,9 +32,6 @@ const Main = (props) => {
     let hourly = totalHour;
 
 
-    // axios.post('https://coockies-yousef.herokuapp.com/admin/cookie_stands/cookiestand/add/', config).then(res => {
-    //     setData(res.data);
-    // })
 
     const formHandler = (e) => {
         e.preventDefault();
@@ -75,7 +70,7 @@ const Main = (props) => {
         axios(configPost)
     }
 
-    const deleteHandler =async (id) => {
+    const deleteHandler = async (id) => {
         const config = {
             method: "DELETE",
             url: `https://coockies-yousef.herokuapp.com/api/v1/cookie_stands/${id}`,
@@ -114,7 +109,6 @@ const Main = (props) => {
                 </div>
             </form>
             <Table
-                branch={branch}
                 hourly={hourly}
                 data={data}
                 deleteHandler={deleteHandler}
@@ -122,7 +116,7 @@ const Main = (props) => {
             />
         </main >
         <Footer
-            counter={branch.length}
+            counter={data.length}
         />
     </>
 
