@@ -108,12 +108,14 @@ const Main = (props) => {
                     <button className='bg-red-800 ml-5 p-2 w-60'>Create</button>
                 </div>
             </form>
+            {data.length == 0 && "No Coockie Stand Available"}
+            {data.length != 0 &&
             <Table
                 hourly={hourly}
                 data={data}
                 deleteHandler={deleteHandler}
 
-            />
+            />}
         </main >
         <Footer
             counter={data.length}

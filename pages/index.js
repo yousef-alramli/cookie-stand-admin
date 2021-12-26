@@ -1,5 +1,4 @@
-import CookiesStandAdmin from './components/cookiesstandadmin'
-import Header from './components/Header'
+import CookiesStandAdmin from "../components/cookiesstandadmin"
 
 
 export default function Home() {

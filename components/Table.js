@@ -3,11 +3,8 @@ import React from 'react'
 function Table(props) {
     const { hourly, data, deleteHandler } = props
     const hourList = ["6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm"]
-    // console.log("from table: ",data)
     return (
         <div className="m-5 p-4 w-full">
-            {data[0] == null && "No Coockie Stand Available"}
-            {data[0] != null &&
 
                 <table className='w-10/12 mx-auto mt-4 text-center border border-red-300  rounded-lg '>
                     <thead className='bg-red-500 border border-red-300'>
@@ -86,7 +83,7 @@ function Table(props) {
                         </tr>
                     </tfoot>
 
-                </table>}
+                </table>
         </div>
     )
 }
